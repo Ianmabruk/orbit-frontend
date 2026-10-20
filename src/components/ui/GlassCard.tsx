@@ -7,7 +7,7 @@ interface GlassCardProps extends HTMLAttributes<HTMLDivElement> {
 export function GlassCard({ children, className = '', ...props }: GlassCardProps) {
   return (
     <div
-      className={`rounded-[28px] border border-white/60 bg-white/60 shadow-[0_24px_80px_rgba(251,146,60,0.12)] backdrop-blur-xl ${className}`}
+      className={`rounded-xl border border-[#E8EAF0] bg-white shadow-sm ${className}`}
       {...props}
     >
       {children}

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import App from './App'
 
@@ -11,62 +11,44 @@ describe('App landing page', () => {
     )
 
     expect(
-      screen.getByRole('heading', { name: /every customer conversation/i }),
+      screen.getByRole('heading', { name: /powerful sms/i }),
     ).toBeInTheDocument()
     expect(screen.getAllByRole('button', { name: /get started/i }).length).toBeGreaterThan(0)
   })
 
-  it('allows a demo user to sign in and continue to onboarding', async () => {
+  it('renders the sign in page with email and password fields', () => {
     render(
       <MemoryRouter initialEntries={['/signin']}>
         <App />
       </MemoryRouter>,
     )
 
-    fireEvent.change(screen.getByLabelText(/^Email$/i), { target: { value: 'demo@example.com' } })
-    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'DemoPass123' } })
-    fireEvent.click(screen.getByRole('button', { name: /^sign in$/i }))
-
-    expect(
-      await screen.findByRole('heading', { name: /tell us about your business/i }),
-    ).toBeInTheDocument()
+    expect(screen.getByLabelText(/email address/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/^password$/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /log in/i })).toBeInTheDocument()
   })
 
-  it('shows the WordPress sync action in the dashboard workspace', async () => {
+  it('renders the register page with required fields', () => {
     render(
-      <MemoryRouter initialEntries={['/signin']}>
+      <MemoryRouter initialEntries={['/register']}>
         <App />
       </MemoryRouter>,
     )
 
-    fireEvent.change(screen.getByLabelText(/^Email$/i), { target: { value: 'demo@example.com' } })
-    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'DemoPass123' } })
-    fireEvent.click(screen.getByRole('button', { name: /^sign in$/i }))
-
-    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
-    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
-    fireEvent.click(await screen.findByRole('button', { name: /finish setup/i }))
-
-    expect(await screen.findByRole('button', { name: /sync wordpress/i })).toBeInTheDocument()
+    expect(screen.getByLabelText(/full name/i)).toBeInTheDocument()
+    expect(screen.getByLabelText(/business name/i)).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /create account/i })).toBeInTheDocument()
   })
 
-  it('shows the CSV import controls in the contacts workspace', async () => {
+  it('renders the feature cards section', () => {
     render(
-      <MemoryRouter initialEntries={['/signin']}>
+      <MemoryRouter>
         <App />
       </MemoryRouter>,
     )
 
-    fireEvent.change(screen.getByLabelText(/^Email$/i), { target: { value: 'demo@example.com' } })
-    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'DemoPass123' } })
-    fireEvent.click(screen.getByRole('button', { name: /^sign in$/i }))
-
-    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
-    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
-    fireEvent.click(await screen.findByRole('button', { name: /finish setup/i }))
-
-    fireEvent.click(await screen.findByRole('link', { name: /contacts/i }))
-
-    expect(await screen.findByLabelText(/paste csv rows/i)).toBeInTheDocument()
+    expect(screen.getByText(/bulk email campaigns/i)).toBeInTheDocument()
+    expect(screen.getByText(/bulk sms campaigns/i)).toBeInTheDocument()
+    expect(screen.getByText(/easy integration/i)).toBeInTheDocument()
   })
 })

@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react'
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'glass'
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'outline'
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant
@@ -9,19 +9,19 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    'bg-[linear-gradient(135deg,#f97316_0%,#fb923c_35%,#fdba74_100%)] text-white shadow-[0_18px_40px_rgba(249,115,22,0.28)] hover:translate-y-[-1px] hover:shadow-[0_20px_50px_rgba(249,115,22,0.35)] border border-orange-200/70',
+    'bg-[#F45B16] text-white hover:bg-[#D94A0B] shadow-sm border border-[#F45B16]',
   secondary:
-    'bg-white/80 text-slate-800 border border-orange-200/80 hover:bg-orange-50',
+    'bg-white text-[#172536] border border-[#E8EAF0] hover:border-[#F45B16] hover:text-[#F45B16]',
   ghost:
-    'bg-white/35 text-slate-700 hover:bg-orange-50/80 border border-white/50',
-  glass:
-    'bg-white/55 text-slate-800 border border-white/70 backdrop-blur-xl shadow-[0_12px_30px_rgba(251,146,60,0.12)] hover:bg-white/75',
+    'bg-transparent text-[#172536] border border-[#E8EAF0] hover:bg-[#FFF3E8] hover:text-[#F45B16]',
+  outline:
+    'bg-transparent text-[#F45B16] border border-[#F45B16] hover:bg-[#FFF3E8]',
 }
 
 export function Button({ variant = 'primary', className = '', children, ...props }: ButtonProps) {
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950 disabled:cursor-not-allowed disabled:opacity-60 ${variantStyles[variant]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#F45B16] focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60 ${variantStyles[variant]} ${className}`}
       {...props}
     >
       {children}
