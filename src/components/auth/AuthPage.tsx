@@ -46,7 +46,15 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
       registerForm.setError('acceptTerms', { message: 'You must accept the terms.' })
       return
     }
-    const ok = await registerUser({ fullName: values.fullName, businessName: values.businessName, email: values.email, password: values.password })
+
+    const normalizedValues = {
+      fullName: values.fullName.trim(),
+      businessName: values.businessName.trim(),
+      email: values.email.trim().toLowerCase(),
+      password: values.password,
+    }
+
+    const ok = await registerUser(normalizedValues)
     if (!ok) { setSubmitError('An account with this email already exists.'); return }
     navigate('/app/overview')
   }
