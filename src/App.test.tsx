@@ -51,4 +51,23 @@ describe('App landing page', () => {
     expect(screen.getByText(/bulk sms campaigns/i)).toBeInTheDocument()
     expect(screen.getByText(/easy integration/i)).toBeInTheDocument()
   })
+
+  it('shows dashboard data in demo mode without a live backend', async () => {
+    render(
+      <MemoryRouter initialEntries={['/signin']}>
+        <App />
+      </MemoryRouter>,
+    )
+
+    fireEvent.change(screen.getByLabelText(/^Email$/i), { target: { value: 'demo@example.com' } })
+    fireEvent.change(screen.getByLabelText(/^Password$/i), { target: { value: 'DemoPass123' } })
+    fireEvent.click(screen.getByRole('button', { name: /^sign in$/i }))
+
+    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
+    fireEvent.click(await screen.findByRole('button', { name: /continue/i }))
+    fireEvent.click(await screen.findByRole('button', { name: /finish setup/i }))
+
+    expect(await screen.findByRole('heading', { name: /good morning|good afternoon|good evening/i })).toBeInTheDocument()
+    expect(screen.queryByText(/unable to load your dashboard data/i)).not.toBeInTheDocument()
+  })
 })
