@@ -143,29 +143,21 @@ function AuthApp() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(values),
       })
+
       if (!res.ok) {
-        const fallbackUser = {
-          email: values.email,
-          fullName: values.fullName,
-          businessName: values.businessName,
-        }
-        setUser(fallbackUser)
-        setToken('demo-token')
-        return true
+        setUser(null)
+        setToken(null)
+        return false
       }
+
       const data = await res.json()
       setUser({ email: data.user.email, fullName: data.user.fullName, businessName: data.user.businessName })
-      setToken(data.token ?? 'demo-token')
+      setToken(data.token ?? null)
       return true
     } catch {
-      const fallbackUser = {
-        email: values.email,
-        fullName: values.fullName,
-        businessName: values.businessName,
-      }
-      setUser(fallbackUser)
-      setToken('demo-token')
-      return true
+      setUser(null)
+      setToken(null)
+      return false
     }
   }
 
