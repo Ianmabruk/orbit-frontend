@@ -78,16 +78,21 @@ export function CampaignWizard({ contacts, onSubmit }: CampaignWizardProps) {
   const handleConfirm = async () => {
     if (!state.channel) return
     setSubmitting(true)
-    const result = await onSubmit({
-      name: state.name,
-      channel: state.channel,
-      template: state.template,
-      scheduledFor: state.scheduledFor || undefined,
-      recipientIds: state.contactListAll ? undefined : state.recipientIds,
-    })
-    setSubmitResult({ ok: result.ok, message: result.message ?? '' })
-    setSubmitting(false)
-    if (result.ok) setTimeout(() => navigate('/app/campaigns'), 1800)
+    try {
+      const result = await onSubmit({
+        name: state.name,
+        channel: state.channel,
+        template: state.template,
+        scheduledFor: state.scheduledFor || undefined,
+        recipientIds: state.contactListAll ? undefined : state.recipientIds,
+      })
+      setSubmitResult({ ok: result.ok, message: result.message ?? '' })
+      if (result.ok) setTimeout(() => navigate('/app/campaigns'), 1800)
+    } catch (err) {
+      setSubmitResult({ ok: false, message: err instanceof Error ? err.message : 'Submission failed' })
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   const smsChars = state.template.length

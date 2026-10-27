@@ -101,20 +101,28 @@ export function DashboardShell() {
 
   const handleCreateCampaign = async (p: { name: string; channel: 'sms' | 'email'; template: string; scheduledFor?: string; recipientIds?: string[] }) => {
     if (!token) return { ok: false, message: 'Not authenticated' }
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), 20000)
     try {
       const res = await fetch(`${apiBaseUrl}/campaigns`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
         body: JSON.stringify({ name: p.name, channel: p.channel, template: p.template, scheduledFor: p.scheduledFor, recipientIds: p.recipientIds }),
+        signal: controller.signal,
       })
-      const d = await res.json()
+      const d = await res.json().catch(() => ({}))
       if (res.ok) {
         setCampaigns((prev) => [{ id: d.campaign?.id, name: d.campaign?.name, channel: d.campaign?.channel, status: d.campaign?.status ?? 'queued', scheduledFor: d.campaign?.scheduledFor ?? null, audience: d.recipients ?? 0 }, ...prev])
         return { ok: true }
       }
-      return { ok: false, message: d.message ?? 'Campaign creation failed' }
-    } catch {
-      return { ok: false, message: 'Network error' }
+      return { ok: false, message: d.message ?? `Campaign creation failed (HTTP ${res.status})` }
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') {
+        return { ok: false, message: 'Request timed out. Check your API URL and network.' }
+      }
+      return { ok: false, message: `Network error: ${err instanceof Error ? err.message : 'unknown'}` }
+    } finally {
+      clearTimeout(timeout)
     }
   }
 
